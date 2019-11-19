@@ -1,0 +1,98 @@
+import pandas as pd
+import math
+
+#Defines the parameters n,m and N
+n=4
+m=2
+N=2
+
+#Generates a random subset C of G_{m,n} sucha that it has size kN
+#Returns a list containing k generator matrices
+    #n: Dimension of the complete space
+    #m: Subspace dimension
+    #k: Code size
+def gen_conjunto(n,m,N):
+    arr=[]
+    for i in range(k):
+        mat=np.random.normal(0,1,(m,n))
+        arr.append(mat)
+    return arr
+
+# Functions that generates the chordal distance matrix between every pair of subspaces in the code C.
+# Returns the distance matrix
+    #a: a list containing generator matrices for every subset
+def cordal(a):
+    b=a
+    dim=int(len(b))
+    mat=np.zeros((dim,dim))
+    c=[]
+    for i in range(len(ens)):
+        c.append(orthogonalize([b[i]]))
+    for i in range(dim):
+        for j in range(dim):
+            if(i==j):
+                mat[i][j]=m*n
+            else:
+                mat[i][j]=(np.trace
+                           (np.dot
+                            (
+                                (np.array(c[i][0])-np.array(c[j][0])).T,
+                                (np.array(c[i][0])-np.array(c[j][0]))
+                            )
+                           )
+                          )**(1/2)
+    return mat
+
+
+# Function that orthogonalizes a list of matrix given as a parameter. This function uses a built-in Gramm-Schmit
+# algorithm
+# Returns a list of orthonormal matrices
+    #z: list of generator matrices
+def orthogonalize(z):
+    y=z
+    for i in range(len(y)):
+        Q,R = np.linalg.qr(y[i].T)
+        y[i] = Q.T
+    return y
+
+# Function that maximizes the minimum distance of the code in one step
+# Returns a code with at least the same minimun distance
+def opt(conjunto):
+    k=int(len(conjunto))
+    mod=np.array(conjunto)
+    orig=copia(conjunto)
+    rand=np.random.randint(low=0,high=k)
+    mod[rand]=np.array(mod[rand]+np.random.normal(0,1,(m,n))*(1/100))
+    if(cordal(orig).min()<cordal(mod).min()):
+        return mod,rand
+    else:
+        return orig,rand
+
+# Iterates over the previously defined function
+     # conjunto: Code that will be optimized
+     # t: thershold that defines the stop condition
+def rep_op(conjunto, t):
+    q=m*n
+    obj=conjunto
+    l=0
+    while(q>t):
+        if(cordal(obj).min()-cordal(opt(obj)[0]).min()!=0):
+            q=cordal(obj).min()-cordal(opt(obj)[0]).min()
+            obj=opt(obj)[0]
+    return obj
+
+# Iterates over the previously defined optimization function
+     # conjunto: Code that will be optimized
+     # t: thershold that defines the stop condition
+def rep_rop(conjunto, t):
+    q=m*n
+    obj=conjunto
+    l=0
+    while(l<10000):
+        while(q>t):
+            if(cordal(obj).min()-cordal(opt(obj)[0]).min()!=0):
+                q=cordal(obj).min()-cordal(opt(obj)[0]).min()
+                obj=opt(obj)[0]
+        l=l+1
+    return obj
+
